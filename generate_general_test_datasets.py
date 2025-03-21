@@ -1,6 +1,6 @@
 '''
-Generate randomly ordered small size, randomly ordered medium size, nearly ordered,
-ordered, reverse ordered) for general comparison
+Generate randomly ordered (small and medium size), nearly ordered, ordered,
+reverse ordered for general comparison
 
 1. Random (General Case): small size, medium size
 
