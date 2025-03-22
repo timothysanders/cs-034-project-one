@@ -12,7 +12,10 @@ quick_sort.py: Contains the quick_sort function.
 
 merge_sort.py: Contains the merge_sort function.
 
-datasets.py: Contains functions to generate all the different types of datasets.
+datasets.py: Contains functions to generate all the different types of datasets, including
+general-purpose and algorithm-specific ones
+
+Add specific dataset generation functions to the datasets.py file, with clear naming conventions.
 
 A main script (e.g., main.py or test_sorting.py) to import and run the tests.
 
