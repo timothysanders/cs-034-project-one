@@ -22,4 +22,4 @@ A main script (e.g., main.py or test_sorting.py) to import and run the tests.
 Pros: Good separation of concerns. Each sorting algorithm is self-contained. Dataset
 generation is also modular. Easier to test individual algorithms.
 
-Cons: Requires managing multiple files.
+Cons:
