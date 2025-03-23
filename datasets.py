@@ -1,6 +1,7 @@
 '''
-Generate general-purpose datasets
----------------------------------
+                                    ---------------------------------
+                                    Generate general-purpose datasets
+                                    ---------------------------------
 
 1. Random (General Case): small size, medium size
 
@@ -44,17 +45,19 @@ QuickSort should be the fastest on average.
 Merge Sort will be stable but will require extra space.
 Shell Sort might not be ideal for very large datasets.
 
--------------------------------------
-Generate algorithm-specific datasets
--------------------------------------
+                                    ------------------------------------
+                                    Generate algorithm-specific datasets
+                                    ------------------------------------
 
 
 1. datasets for Shell sort
 --------------------------
+
     1) Evenly distributed list without large clusters of disorder
     2) Unevenly distributed list requiring long-distance swaps-Small numbers clustered at
        the end, large numbers at the beginning
     3) Partly ordered but frequently updated list (e.g., Stock Order Book)
+    
 
 2. datasets for QuickSort
 -------------------------
