@@ -16,35 +16,33 @@ Objectives:
    
    Separate .py files for each sorting algorithm, and one for datasets:
 
-. shell_sort.py: Contains the shell_sort function.
+   . shell_sort.py: Contains the shell_sort function.
 
-. quick_sort.py: Contains the quick_sort function.
+   . quick_sort.py: Contains the quick_sort function.
 
-. merge_sort.py: Contains the merge_sort function.
+   . merge_sort.py: Contains the merge_sort function.
 
-. datasets.py: Contains functions to generate all the different types of datasets,
-  including general-purpose and algorithm-specific ones
+   . datasets.py: Contains functions to generate all the different types of datasets,
+     including general-purpose and algorithm-specific ones
 
-. A main script (e.g., main.py or test_sorting.py) to import and run the tests.
+   . A main script (e.g., main.py or test_sorting.py) to import and run the tests.
   
 
-2. Analyze and compare the runtime performance and efficiency of each sorting algorithm.
+3. Analyze and compare the runtime performance and efficiency of each sorting algorithm.
 
 
    To analyze efficiency, we'll:
 
-. Generate these datasets programmatically.
+   . Generate these datasets programmatically.
 
-. Run each sorting algorithm on each dataset.
+   . Run each sorting algorithm on each dataset.
 
-. Measure execution time and memory usage.
+   . Measure execution time and memory usage.
 
-. Compare results to determine which algorithm is best suited for each case.
+   . Compare results to determine which algorithm is best suited for each case.
 
 
 3. Apply these algorithms to practical datasets and scenarios.
 
-
-
-Pros: Good separation of concerns. Each sorting algorithm is self-contained. Dataset
-generation is also modular. Easier to test individual algorithms.
+   Pros: Good separation of concerns. Each sorting algorithm is self-contained. Dataset
+   generation is also modular. Easier to test individual algorithms.
