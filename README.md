@@ -11,10 +11,10 @@ Objectives:
 1. Design and implement three sorting algorithms: Shell Sort, QuickSort, Merge Sort
 
 
-Structure of Project
+   Structure of Project
 
    
-Separate .py files for each sorting algorithm, and one for datasets:
+   Separate .py files for each sorting algorithm, and one for datasets:
 
 . shell_sort.py: Contains the shell_sort function.
 
@@ -31,7 +31,7 @@ Separate .py files for each sorting algorithm, and one for datasets:
 2. Analyze and compare the runtime performance and efficiency of each sorting algorithm.
 
 
-To analyze efficiency, we'll:
+   To analyze efficiency, we'll:
 
 . Generate these datasets programmatically.
 
