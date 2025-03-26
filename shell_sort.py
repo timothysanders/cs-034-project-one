@@ -58,14 +58,6 @@ swaps
 """
 
 
-
-
-
-
-
-
-
-
 """
 Implementation of the shell sort algorithm.
 
@@ -75,10 +67,10 @@ known as a gap space, or gap value.
 
 The algorithm performs multiple passes with decreasing gap values, gradually sorting the list.
 The time complexity varies based on the given sequence, but the average runtime is O(N^{1.5}).
-
+"""
 
 def insertion_sort_interleaved(numbers: list[int], start_index: int, gap: int) -> None:
-    '''
+    """
     Perform insertion sort on interleaved elements with the specified gap.
 
     This function sorts a subsequence of elements starting at start_index
@@ -96,7 +88,7 @@ def insertion_sort_interleaved(numbers: list[int], start_index: int, gap: int) -
     Returns
     -------
     None
-   '''
+    """
     if not numbers or start_index < 0 or gap < 1 or start_index >= len(numbers):
         raise ValueError("Invalid parameters")
 
@@ -107,23 +99,54 @@ def insertion_sort_interleaved(numbers: list[int], start_index: int, gap: int) -
             j = j - gap
 
 
-def shell_sort(numbers: list[int], gap_values: list[int]) -> None:
-   '''
+def generate_knuth_gap_sequence(array_length: int) -> list[int]:
+    """
+    Generate a sequence of gap values according to Knuth's gap sequence.
+
+    Note that the list is originally generated in ascending order, but is reversed before
+    it is returned to the caller.
+
+    Parameters
+    ----------
+    array_length : int
+        - The length of the array for which gap values will be calculated.
+
+    Returns
+    -------
+    list[int]
+        - A list of the calculated gap values
+    """
+    gap_values = []
+    gap = 1
+    while gap < array_length:
+        gap_values.append(gap)
+        gap = 3 * gap + 1
+    gap_values.reverse()
+    return gap_values
+
+def shell_sort(numbers: list[int], gap_values: list[int] = None) -> None:
+    """
     Sort a list using the shell sort algorithm.
 
     Performs multiple passes over the list with decreasing gap values.
     Each pass sorts interleaved subsequences using `insertion_sort_interleaved()`.
+    If provided, the list of gap values in `gap_values` is utilized, otherwise,
+    gap values will be created based on the Knuth sequence.
 
     Parameters
     ----------
     numbers : list[int]
         - The list to be sorted
-    gap_values : list[int]
+    gap_values : list[int] = None
         - A sequence of gap values (preferably in descending order)
+
     Returns
     -------
     None
-    '''
+    """
+    if not gap_values:
+        gap_values = generate_knuth_gap_sequence(len(numbers))
+
     for gap_value in gap_values:
         for i in range(gap_value):
             insertion_sort_interleaved(numbers, i, gap_value)
@@ -132,5 +155,7 @@ if __name__ == "__main__":
     test_one = [9, 8, 3, 7, 5, 6, 4, 1]
     shell_sort(test_one, [4, 2, 1])
     assert test_one == [1, 3, 4, 5, 6, 7, 8, 9]
+    test_two = [3, 6, 1, 7, 8, 3, 5, 7, 5]
+    shell_sort(test_two)
+    assert test_two == [1, 3, 3, 5, 5, 6, 7, 7, 8]
 
-"""
