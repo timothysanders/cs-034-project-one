@@ -17,72 +17,17 @@ Sort to mimic this real-life scenario.
 """
 
 
-import numpy as np
-import time
-import pandas as pd
+ Dataset Characteristics\n")
+    for name, data in all_datasets.items():
+        print(f"Dataset: {name}")
+        print(f"  ➤ Size: {len(data)}")
+        print(f"  ➤ Min: {np.min(data)}")
+        print(f"  ➤ Max: {np.max(data)}")
+        print(f"  ➤ Mean: {np.mean(data):.2f}")
+        print(f"  ➤ Std Dev: {np.std(data):.2f}")
+        print("-" * 40)
 
-# Generate gap sequence
-def generate_datasets(size):
-    half = size // 2
-    datasets = {}
-
-    # Add "Large Random" first if applicable
-    if size >= 100000:
-        datasets["Large Random"] = np.random.randint(0, 1000000, size)
-
-    # Add the rest
-    datasets.update({
-        "Random": np.random.randint(0, 1000, size),
-        "Nearly Sorted": np.sort(np.random.randint(0, 1000, size)) + np.random.randint(-3, 3, size),
-        "Reverse Sorted": np.sort(np.random.randint(0, 1000, size))[::-1],
-        "Many Duplicates": np.random.choice([5, 10, 15, 20], size=size, replace=True),
-        "Even Distributed": np.linspace(0, 1000, size).astype(int),
-        "Uneven Distributed (Front Heavy)": np.concatenate([
-            np.random.randint(900, 1000, half),
-            np.random.randint(0, 100, size - half)
-        ]),
-        "Uneven Distributed (End Heavy)": np.concatenate([
-            np.random.randint(0, 100, half),
-            np.random.randint(900, 1000, size - half)
-        ])
-    })
-
-    return datasets
-
-
-# Generate test datasets
-def generate_datasets(size):
-    half = size // 2
-    
-    return {
-        "Random": np.random.randint(0, 1000, size),
-        
-        "Nearly Sorted": np.sort(np.random.randint(0, 1000, size)) + np.random.randint(-3, 3, size),
-        
-        "Reverse Sorted": np.sort(np.random.randint(0, 1000, size))[::-1],
-        
-        "Many Duplicates": np.random.choice([5, 10, 15, 20], size=size, replace=True),
-        
-        "Even Distributed": np.linspace(0, 1000, size).astype(int),  # Evenly spaced values from 0 to 1000
-        
-        "Uneven Distributed (Front Heavy)": np.concatenate([
-            np.random.randint(900, 1000, half),     # Large values clustered at front
-            np.random.randint(0, 100, size - half)  # Small values at the end
-        ]),
-        
-        "Uneven Distributed (End Heavy)": np.concatenate([
-            np.random.randint(0, 100, half),        # Small values at the front
-            np.random.randint(900, 1000, size - half)  # Large values at the end
-        ])
-    }
-
-# Main execution block
-if __name__ == "__main__":
-    results = []
-    arr_size = 100
-    datasets = generate_datasets(arr_size)
-
-    for name, data in datasets.items():
+    for name, data in all_datasets.items():
         my_arr = data.copy()
 
         start_time = time.time()
@@ -94,17 +39,14 @@ if __name__ == "__main__":
 
         results.append({
             "Dataset": name,
+            "Size": len(data),
             "Total Swaps": total_swaps,
             "Execution Time (s)": execution_time
         })
 
-    # Convert results to DataFrame and print nicely
     df = pd.DataFrame(results)
-    print("\nShell Sort Performance Summary:\n")
+    print("\n Shell Sort Performance Summary:\n")
     print(df.to_string(index=False))
-
-
-
 
 
 
