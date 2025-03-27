@@ -19,7 +19,9 @@ Sort to mimic this real-life scenario.
 
 import numpy as np
 import time
+import pandas as pd
 
+# Generate gap sequence
 def generate_gap_values(arrSize):
     gap_values = []
     gap = arrSize // 2
@@ -28,18 +30,18 @@ def generate_gap_values(arrSize):
         gap = gap // 2
     return gap_values
 
+# Modified insertion sort for Shell Sort
 def insertion_sort_interleaved(arr, start_index, gap_value):
     swaps = 0
     for i in range(start_index + gap_value, len(arr), gap_value):
         j = i
         while (j - gap_value >= start_index) and (arr[j] < arr[j - gap_value]):
             swaps += 1
-            temp = arr[j]
-            arr[j] = arr[j - gap_value]
-            arr[j - gap_value] = temp
+            arr[j], arr[j - gap_value] = arr[j - gap_value], arr[j]
             j = j - gap_value
     return swaps
 
+# Shell Sort using insertion sort with gaps
 def shell_sort(arr):
     arrSize = len(arr)
     gap_values = generate_gap_values(arrSize)
@@ -48,29 +50,42 @@ def shell_sort(arr):
         for i in range(gap_value):
             swaps.append(insertion_sort_interleaved(arr, i, gap_value))
     return swaps
-    
-    
-# Random Test datasets by numpy
+
+# Generate test datasets
+def generate_datasets(size):
+    return {
+        "Random": np.random.randint(0, 1000, size),
+        "Nearly Sorted": np.sort(np.random.randint(0, 1000, size)) + np.random.randint(-3, 3, size),
+        "Reverse Sorted": np.sort(np.random.randint(0, 1000, size))[::-1],
+        "Many Duplicates": np.random.choice([5, 10, 15, 20], size=size, replace=True)
+    }
+
+# Main execution block
 if __name__ == "__main__":
-    my_arr = []
+    results = []
+    arr_size = 100
+    datasets = generate_datasets(arr_size)
 
-    for i in range(100):
-        my_arr.append(np.random.randint(100))
+    for name, data in datasets.items():
+        my_arr = data.copy()
 
-    print("Unsorted:", my_arr)
-    print()
-    
-    start_time = time.time()
-    swap_counts = shell_sort(my_arr)
-    end_time = time.time()
-    
-    print("Sorted:", my_arr)
-    print()
-    
-    total_swap = sum(swap_counts)
-    print("Total swaps: ", total_swap)
-    print()
-    print("Execution Time: ", end_time - start_time)
+        start_time = time.time()
+        swap_counts = shell_sort(my_arr)
+        end_time = time.time()
+
+        total_swaps = sum(swap_counts)
+        execution_time = end_time - start_time
+
+        results.append({
+            "Dataset": name,
+            "Total Swaps": total_swaps,
+            "Execution Time (s)": execution_time
+        })
+
+    # Convert results to DataFrame and print nicely
+    df = pd.DataFrame(results)
+    print("\nShell Sort Performance Summary:\n")
+    print(df.to_string(index=False))
 
 
 
