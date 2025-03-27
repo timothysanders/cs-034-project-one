@@ -16,8 +16,84 @@ Sort to mimic this real-life scenario.
 
 """
 
+import numpy as np
+import time
+import pandas as pd
 
- Dataset Characteristics\n")
+# Generate gap sequence
+def generate_gap_values(arrSize):
+    gap_values = []
+    gap = arrSize // 2
+    while gap >= 1:
+        gap_values.append(gap)
+        gap = gap // 2
+    return gap_values
+
+# Modified insertion sort for Shell Sort
+def insertion_sort_interleaved(arr, start_index, gap_value):
+    swaps = 0
+    for i in range(start_index + gap_value, len(arr), gap_value):
+        j = i
+        while (j - gap_value >= start_index) and (arr[j] < arr[j - gap_value]):
+            swaps += 1
+            arr[j], arr[j - gap_value] = arr[j - gap_value], arr[j]
+            j = j - gap_value
+    return swaps
+
+# Shell Sort using insertion sort with gaps
+def shell_sort(arr):
+    arrSize = len(arr)
+    gap_values = generate_gap_values(arrSize)
+    swaps = []
+    for gap_value in gap_values:
+        for i in range(gap_value):
+            swaps.append(insertion_sort_interleaved(arr, i, gap_value))
+    return swaps
+
+# Generate characteristic testing datasets
+def generate_structured_datasets(size):
+    """Structured datasets for characteristic testing."""
+    half = size // 2
+    return {
+        "Random": np.random.randint(0, 1000, size),
+        "Nearly Sorted": np.sort(np.random.randint(0, 1000, size)) + np.random.randint(-3, 3, size),
+        "Reverse Sorted": np.sort(np.random.randint(0, 1000, size))[::-1],
+        "Many Duplicates": np.random.choice([5, 10, 15, 20], size=size, replace=True),
+        "Even Distributed": np.linspace(0, 1000, size).astype(int),
+        "Uneven Distributed (Front Heavy)": np.concatenate([
+            np.random.randint(900, 1000, half),
+            np.random.randint(0, 100, size - half)
+        ]),
+        "Uneven Distributed (End Heavy)": np.concatenate([
+            np.random.randint(0, 100, half),
+            np.random.randint(900, 1000, size - half)
+        ])
+    }
+
+# Generate large scale random datasets
+def generate_large_random_dataset(size):
+    """Single large random dataset for scalability testing."""
+    return {
+        f"Large Random ({size:,})": np.random.randint(0, 1_000_000, size)
+    }
+
+
+# Main execution block
+if __name__ == "__main__":
+    results = []
+    
+    # Structured dataset size
+    structured_size = 5_000
+    structured_datasets = generate_structured_datasets(structured_size)
+
+    # Large random dataset size
+    large_size = 200_000
+    large_dataset = generate_large_random_dataset(large_size)
+
+    # Combine both sets of datasets
+    all_datasets = {**structured_datasets, **large_dataset}
+
+    print(f"\n Dataset Characteristics\n")
     for name, data in all_datasets.items():
         print(f"Dataset: {name}")
         print(f"  ➤ Size: {len(data)}")
@@ -49,7 +125,43 @@ Sort to mimic this real-life scenario.
     print(df.to_string(index=False))
 
 
+def time_sorting_algorithms(datasets):
+    results = []
 
+    for name, data in datasets.items():
+        arr = data.copy()
+        n = len(arr)
+
+        # Generate gap values
+        gaps = [n // (2 ** k) for k in range(int(np.log2(n)) + 1) if n // (2 ** k) > 0]
+
+        # Shell Sort (with gap-aware implementation)
+        arr_shell = arr.copy()
+        t1 = time.time()
+        swap_counts = shell_sort(arr_shell)
+        t_shell = time.time() - t1
+        total_swaps = sum(swap_counts)
+
+        # QuickSort (NumPy built-in)
+        t2 = time.time()
+        np.sort(arr.copy(), kind='quicksort')
+        t_quick = time.time() - t2
+
+        # MergeSort (NumPy built-in)
+        t3 = time.time()
+        np.sort(arr.copy(), kind='mergesort')
+        t_merge = time.time() - t3
+
+        results.append({
+            "Dataset": name,
+            "Size": n,
+            "Shell Sort Time (s)": t_shell,
+            "Shell Sort Swaps": total_swaps,
+            "QuickSort Time (s)": t_quick,
+            "MergeSort Time (s)": t_merge
+        })
+
+    return pd.DataFrame(results)
 
 
 
