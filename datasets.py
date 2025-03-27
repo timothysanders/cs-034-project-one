@@ -80,12 +80,30 @@ import time
 
 # Generate test datasets
 def generate_datasets(size):
+    half = size // 2
+    
     return {
         "Random": np.random.randint(0, 1000, size),
+        
         "Nearly Sorted": np.sort(np.random.randint(0, 1000, size)) + np.random.randint(-3, 3, size),
+        
         "Reverse Sorted": np.sort(np.random.randint(0, 1000, size))[::-1],
-        "Many Duplicates": np.random.choice([5, 10, 15, 20], size=size, replace=True)
+        
+        "Many Duplicates": np.random.choice([5, 10, 15, 20], size=size, replace=True),
+        
+        "Even Distributed": np.linspace(0, 1000, size).astype(int),  # Evenly spaced values from 0 to 1000
+        
+        "Uneven Distributed (Front Heavy)": np.concatenate([
+            np.random.randint(900, 1000, half),     # Large values clustered at front
+            np.random.randint(0, 100, size - half)  # Small values at the end
+        ]),
+        
+        "Uneven Distributed (End Heavy)": np.concatenate([
+            np.random.randint(0, 100, half),        # Small values at the front
+            np.random.randint(900, 1000, size - half)  # Large values at the end
+        ])
     }
+  
 
 # Time sorting algorithms on the datasets
 def time_sorting_algorithms(datasets):
