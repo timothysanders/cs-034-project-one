@@ -69,6 +69,63 @@ Shell Sort might not be ideal for very large datasets.
 
 '''
 
+'''
+                                    ---------------------------------
+                                    Generate general-purpose datasets
+                                    ---------------------------------
+'''
+import numpy as np
+import pandas as pd
+import time
+
+# Generate test datasets
+def generate_datasets(size):
+    return {
+        "Random": np.random.randint(0, 1000, size),
+        "Nearly Sorted": np.sort(np.random.randint(0, 1000, size)) + np.random.randint(-3, 3, size),
+        "Reverse Sorted": np.sort(np.random.randint(0, 1000, size))[::-1],
+        "Many Duplicates": np.random.choice([5, 10, 15, 20], size=size, replace=True)
+    }
+
+# Time sorting algorithms on the datasets
+def time_sorting_algorithms(datasets):
+    results = []
+
+    for name, data in datasets.items():
+        arr = data.copy()
+        n = len(arr)
+        gaps = [n // (2 ** k) for k in range(int(np.log2(n)) + 1) if n // (2 ** k) > 0]
+
+        # Shell Sort
+        t1 = time.time()
+        shell_sort(arr.copy(), gaps)
+        t_shell = time.time() - t1
+
+        # QuickSort
+        t2 = time.time()
+        np.sort(arr.copy(), kind='quicksort')
+        t_quick = time.time() - t2
+
+        # MergeSort
+        t3 = time.time()
+        np.sort(arr.copy(), kind='mergesort')
+        t_merge = time.time() - t3
+
+        results.append({
+            "Dataset": name,
+            "Shell Sort": t_shell,
+            "QuickSort": t_quick,
+            "MergeSort": t_merge
+        })
+
+    return pd.DataFrame(results)
+
+
+'''
+                                    -----------------------------------
+                                    Generate random datasets (from Tim)
+                                    -----------------------------------
+'''
 
 import numpy as np
 
