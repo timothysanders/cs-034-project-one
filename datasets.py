@@ -78,52 +78,12 @@ import numpy as np
 import pandas as pd
 import time
 
-# Generate test datasets
-import numpy as np
-import time
-import pandas as pd
 
-# Generate gap sequence
-def generate_gap_values(arrSize):
-    gap_values = []
-    gap = arrSize // 2
-    while gap >= 1:
-        gap_values.append(gap)
-        gap = gap // 2
-    return gap_values
-
-# Modified insertion sort for Shell Sort
-def insertion_sort_interleaved(arr, start_index, gap_value):
-    swaps = 0
-    for i in range(start_index + gap_value, len(arr), gap_value):
-        j = i
-        while (j - gap_value >= start_index) and (arr[j] < arr[j - gap_value]):
-            swaps += 1
-            arr[j], arr[j - gap_value] = arr[j - gap_value], arr[j]
-            j = j - gap_value
-    return swaps
-
-# Shell Sort using insertion sort with gaps
-def shell_sort(arr):
-    arrSize = len(arr)
-    gap_values = generate_gap_values(arrSize)
-    swaps = []
-    for gap_value in gap_values:
-        for i in range(gap_value):
-            swaps.append(insertion_sort_interleaved(arr, i, gap_value))
-    return swaps
-
-# Generate test datasets
-def generate_datasets(size):
+# Generate structured datasets for characterist testing
+def generate_structured_datasets(size):
+    """Structured datasets for characteristic testing."""
     half = size // 2
-    datasets = {}
-
-    # Add "Large Random" first if applicable
-    if size >= 100000:
-        datasets["Large Random"] = np.random.randint(0, 1000000, size)
-
-    # Add the rest
-    datasets.update({
+    return {
         "Random": np.random.randint(0, 1000, size),
         "Nearly Sorted": np.sort(np.random.randint(0, 1000, size)) + np.random.randint(-3, 3, size),
         "Reverse Sorted": np.sort(np.random.randint(0, 1000, size))[::-1],
@@ -137,39 +97,14 @@ def generate_datasets(size):
             np.random.randint(0, 100, half),
             np.random.randint(900, 1000, size - half)
         ])
-    })
+    }
 
-    return datasets
-
-
-
-# Main execution block
-if __name__ == "__main__":
-    results = []
-    arr_size = 100
-    datasets = generate_datasets(arr_size)
-
-    for name, data in datasets.items():
-        my_arr = data.copy()
-
-        start_time = time.time()
-        swap_counts = shell_sort(my_arr)
-        end_time = time.time()
-
-        total_swaps = sum(swap_counts)
-        execution_time = end_time - start_time
-
-        results.append({
-            "Dataset": name,
-            "Total Swaps": total_swaps,
-            "Execution Time (s)": execution_time
-        })
-
-    # Convert results to DataFrame and print nicely
-    df = pd.DataFrame(results)
-    print("\nShell Sort Performance Summary:\n")
-    print(df.to_string(index=False))
-
+# Generate large scale random dataset for scalability testing
+def generate_large_random_dataset(size):
+    """Single large random dataset for scalability testing."""
+    return {
+        f"Large Random ({size:,})": np.random.randint(0, 1_000_000, size)
+    }
   
 
 # Time sorting algorithms on the datasets
@@ -179,31 +114,38 @@ def time_sorting_algorithms(datasets):
     for name, data in datasets.items():
         arr = data.copy()
         n = len(arr)
+
+        # Generate gap values
         gaps = [n // (2 ** k) for k in range(int(np.log2(n)) + 1) if n // (2 ** k) > 0]
 
-        # Shell Sort
+        # Shell Sort (with gap-aware implementation)
+        arr_shell = arr.copy()
         t1 = time.time()
-        shell_sort(arr.copy(), gaps)
+        swap_counts = shell_sort(arr_shell)
         t_shell = time.time() - t1
+        total_swaps = sum(swap_counts)
 
-        # QuickSort
+        # QuickSort (NumPy built-in)
         t2 = time.time()
         np.sort(arr.copy(), kind='quicksort')
         t_quick = time.time() - t2
 
-        # MergeSort
+        # MergeSort (NumPy built-in)
         t3 = time.time()
         np.sort(arr.copy(), kind='mergesort')
         t_merge = time.time() - t3
 
         results.append({
             "Dataset": name,
-            "Shell Sort": t_shell,
-            "QuickSort": t_quick,
-            "MergeSort": t_merge
+            "Size": n,
+            "Shell Sort Time (s)": t_shell,
+            "Shell Sort Swaps": total_swaps,
+            "QuickSort Time (s)": t_quick,
+            "MergeSort Time (s)": t_merge
         })
 
     return pd.DataFrame(results)
+
 
 
 '''
