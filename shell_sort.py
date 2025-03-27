@@ -57,7 +57,71 @@ swaps
 
 """
 
+def generate_gapValues(arrSize):
+    """
+    Generates a list of gap values for Shell Sort.
 
+    Args:
+        arrSize: The size of the array.
+
+    Returns:
+        A list of gap values.
+    """
+    gapValues = []
+    gap = arrSize // 2
+    while gap >= 1:
+        gapValues.append(gap)
+        gap = gap // 2
+    return gapValues
+
+def InsertionSortInterleaved(arr, arrSize, startIndex, gapValue):
+    """
+    Performs an interleaved insertion sort with a given gap value.
+
+    Args:
+        arr: The list to be sorted.
+        arrSize: The size of the list.
+        startIndex: The starting index for this interleaved sort.
+        gapValue: The gap value to use for comparisons and swaps.
+
+    Returns:
+        The number of swaps performed during this interleaved sort.
+    """
+    swaps = 0
+    for i in range(startIndex + gapValue, arrSize, gapValue):
+        j = i
+        while (j - gapValue) >= startIndex and (arr[j] < arr[j - gapValue]):
+            swaps += 1
+            arr[j], arr[j - gapValue] = arr[j - gapValue], arr[j]
+            j -= gapValue
+    return swaps
+
+def ShellSort(arr):
+    """
+    Implements the Shell Sort algorithm.
+
+    Args:
+        arr: The list to be sorted.
+
+    Returns:
+        A list containing the number of swaps performed for each interleaved
+        insertion sort during the Shell Sort process.
+    """
+    arrSize = len(arr)
+    gapValues = generate_gapValues(arrSize)
+    swaps = []
+    for gapValue in gapValues:
+        for i in range(gapValue):
+            swaps.append(InsertionSortInterleaved(arr, arrSize, i, gapValue))
+    return swaps
+
+# Example usage:
+my_array = [6, 4, 1, 8, 3, 9, 2, 7, 5]
+print("Original array:", my_array)
+
+swap_counts = ShellSort(my_array)
+print("Sorted array:", my_array)
+print("Swap counts per interleaved insertion sort:", swap_counts)
 
 
 
