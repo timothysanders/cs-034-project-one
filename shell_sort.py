@@ -22,34 +22,33 @@ import time
 import pandas as pd
 
 # Generate gap sequence
-def generate_gap_values(arrSize):
-    gap_values = []
-    gap = arrSize // 2
-    while gap >= 1:
-        gap_values.append(gap)
-        gap = gap // 2
-    return gap_values
+def generate_datasets(size):
+    half = size // 2
+    datasets = {}
 
-# Modified insertion sort for Shell Sort
-def insertion_sort_interleaved(arr, start_index, gap_value):
-    swaps = 0
-    for i in range(start_index + gap_value, len(arr), gap_value):
-        j = i
-        while (j - gap_value >= start_index) and (arr[j] < arr[j - gap_value]):
-            swaps += 1
-            arr[j], arr[j - gap_value] = arr[j - gap_value], arr[j]
-            j = j - gap_value
-    return swaps
+    # Add "Large Random" first if applicable
+    if size >= 100000:
+        datasets["Large Random"] = np.random.randint(0, 1000000, size)
 
-# Shell Sort using insertion sort with gaps
-def shell_sort(arr):
-    arrSize = len(arr)
-    gap_values = generate_gap_values(arrSize)
-    swaps = []
-    for gap_value in gap_values:
-        for i in range(gap_value):
-            swaps.append(insertion_sort_interleaved(arr, i, gap_value))
-    return swaps
+    # Add the rest
+    datasets.update({
+        "Random": np.random.randint(0, 1000, size),
+        "Nearly Sorted": np.sort(np.random.randint(0, 1000, size)) + np.random.randint(-3, 3, size),
+        "Reverse Sorted": np.sort(np.random.randint(0, 1000, size))[::-1],
+        "Many Duplicates": np.random.choice([5, 10, 15, 20], size=size, replace=True),
+        "Even Distributed": np.linspace(0, 1000, size).astype(int),
+        "Uneven Distributed (Front Heavy)": np.concatenate([
+            np.random.randint(900, 1000, half),
+            np.random.randint(0, 100, size - half)
+        ]),
+        "Uneven Distributed (End Heavy)": np.concatenate([
+            np.random.randint(0, 100, half),
+            np.random.randint(900, 1000, size - half)
+        ])
+    })
+
+    return datasets
+
 
 # Generate test datasets
 def generate_datasets(size):
