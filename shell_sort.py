@@ -16,47 +16,6 @@ Sort to mimic this real-life scenario.
 
 """
 
-"""
-Pseudo code for Shell Sort
-
-DEFINE generate_gapValues(arrSize){
-                INITIALIZE gapValues = [ ]
-                INITIALIZE gap = arrSize // 2
-                WHILE gap >= 1 {
-                        APPEND gap TO gapValues
-                        SET gap = gap // 2
-                }
-                RETURN gapValues
-}
-
-
-DEFINE InsertionSortInterleaved(arr, arrSize, startIndex, gapValue) {
-                INITIALIZE swaps = 0
-                FOR i FROM (startIndex + gapValue) TO (arrSize) in steps of gapValue {
-                      INITIALIZE j = i
-                      WHILE (j - gapValue) >= startIndex AND (arr[j] < arr[j - gapValue]) {
-                                 INCREMENT swaps BY 1
-                                 SWAP the value of arr[j] AND the value of arr[j - gapValue]
-                                 DECREMENT j BY gapValue
-                      }
-               }
-               RETURN swaps
-}
-
-
-DEFINE ShellSort(arr, arrSize, gapValues) {
-                 INITIALIZE swaps = [ ]  
-                 FOR each gapValue in the list gapValues {
-                          FOR i FROM 0 TO (gapValue - 1) {
-                                   APPEND InsertionSortInterleaved(arr, arrSize, i, gapValue) TO
-swaps
-                          }
-         }
-               RETURN swaps
-}
-
-"""
-
 
 import numpy as np
 import time
@@ -91,7 +50,7 @@ def shell_sort(arr):
     return swaps
     
     
-
+# Random Test datasets by numpy
 if __name__ == "__main__":
     my_arr = []
 
