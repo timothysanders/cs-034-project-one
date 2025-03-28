@@ -11,7 +11,18 @@ from shell_sort import shell_sort
 
 
 # Time sorting algorithms on the datasets
-def time_sorting_algorithms(size: int):
+def time_sorting_algorithms(size: int) -> pd.DataFrame:
+    """
+    Run each algorithm on general datasets.
+
+    Parameters
+    ----------
+    size : int
+
+    Returns
+    -------
+    pd.DataFrame
+    """
     datasets = generate_structured_datasets(size)
     results = []
 
@@ -50,7 +61,18 @@ def time_sorting_algorithms(size: int):
 
     return pd.DataFrame(results)
 
-def time_shell_sort_algorithm(size: int):
+def time_shell_sort_algorithm(size: int) -> pd.DataFrame:
+    """
+    Time shell sort algorithm specific datasets.
+
+    Parameters
+    ----------
+    size : int
+
+    Returns
+    -------
+    pd.DataFrame
+    """
     datasets = generate_shell_sort_datasets(size)
     results = []
     for name, data in datasets.items():
@@ -68,7 +90,18 @@ def time_shell_sort_algorithm(size: int):
         })
     return pd.DataFrame(results)
 
-def time_merge_sort_algorithm(size: int):
+def time_merge_sort_algorithm(size: int) -> pd.DataFrame:
+    """
+    Time merge sort specific datasets.
+
+    Parameters
+    ----------
+    size : int
+
+    Returns
+    -------
+    pd.DataFrame
+    """
     datasets = generate_merge_sort_datasets(size)
     results = []
     for name, data in datasets.items():
@@ -84,7 +117,18 @@ def time_merge_sort_algorithm(size: int):
         })
     return pd.DataFrame(results)
 
-def time_quick_sort_algorithm(size: int):
+def time_quick_sort_algorithm(size: int) -> pd.DataFrame:
+    """
+    Time quicksort algorithm specific datasets.
+
+    Parameters
+    ----------
+    size : int
+
+    Returns
+    -------
+    pd.DataFrame
+    """
     datasets = generate_quicksort_datasets(size)
     results = []
     for name, data in datasets.items():
