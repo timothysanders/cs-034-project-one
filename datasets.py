@@ -216,28 +216,28 @@ def generate_shell_sort_datasets(size: int) -> dict[str, list]:
 
 
 # Define function to generate an evenly_distributed dataset for Shell Sort
-def generate_evenly_distributed(size: int, low: int = 0, high: int = 1000) -> list:
+def generate_evenly_distributed(size: int, low: int = 0, high: int = 1000) -> list[float]:
     """
     Generates an evenly distributed list without large clusters of disorder.
 
     Parameters
     ----------
     size : int
-        - Number of elements in the list.
+        Number of elements in the list.
     low : int
-        - Minimum value in the range.
+        Minimum value in the range.
     high : int
-        - Maximum value in the range.
+        Maximum value in the range.
 
     Returns
     -------
-    list
-        - Evenly distributed list.
+    list[float]
+        Evenly distributed list.
     """
     return np.random.permutation(np.linspace(low, high, size)).tolist()
 
 # Define function to generate unevenly_distributed datasets for Shell Sort
-def generate_unevenly_distributed(size: int, low: int = 0, high: int = 1000, split_ratio: float = 0.5) -> list:
+def generate_unevenly_distributed(size: int, low: int = 0, high: int = 1000, split_ratio: float = 0.5) -> list[int]:
     """
     Generates an unevenly distributed list where small numbers are clustered at the end
     and large numbers at the beginning.
@@ -245,18 +245,18 @@ def generate_unevenly_distributed(size: int, low: int = 0, high: int = 1000, spl
     Parameters
     ----------
     size : int
-        - Number of elements in the list.
+        Number of elements in the list.
     low : int
-        - Minimum value in the range.
+        Minimum value in the range.
     high : int
-        - Maximum value in the range.
+        Maximum value in the range.
     split_ratio : float
-        - Fraction of large numbers at the beginning.
+        Fraction of large numbers at the beginning.
 
     Returns
     -------
-    list
-        - Unevenly distributed NumPy array.
+    list[int]
+        Unevenly distributed NumPy array.
     """
     split_point = int(size * split_ratio)
     large_numbers = np.random.randint(high - 100, high, size=split_point)  # Large numbers at the beginning
@@ -267,7 +267,7 @@ def generate_unevenly_distributed(size: int, low: int = 0, high: int = 1000, spl
 
 
 # Define function to generate partly ordered yet frequently updated dataset for Shell Sort
-def generate_partly_ordered(size: int, ordered_ratio: float = 0.8, low: int = 0, high: int = 1000) -> list:
+def generate_partly_ordered(size: int, ordered_ratio: float = 0.8, low: int = 0, high: int = 1000) -> list[int]:
     """
     Generates a partly ordered list where the first part is sorted, and the rest is randomly inserted.
     This simulates a stock order book where new data is appended randomly.
@@ -275,17 +275,18 @@ def generate_partly_ordered(size: int, ordered_ratio: float = 0.8, low: int = 0,
     Parameters
     ----------
     size : int
-        - Number of elements in the list.
+        Number of elements in the list.
     ordered_ratio: float
-        - Fraction of the list that should be pre-sorted.
+        Fraction of the list that should be pre-sorted.
     low : int
-        - Minimum value in the range.
+        Minimum value in the range.
     high: int
-        - Maximum value in the range.
+        Maximum value in the range.
+
     Returns
     -------
-    list
-        - Partly ordered NumPy array.
+    list[int]
+        Partly ordered NumPy array.
     """
     ordered_size = int(size * ordered_ratio)
     unordered_size = size - ordered_size
@@ -301,20 +302,21 @@ def generate_partly_ordered(size: int, ordered_ratio: float = 0.8, low: int = 0,
                     -----------------------------------------------
 '''
 # Define function to generate a variant of partially sorted dataset where a few elements are randomly swapped
-def generate_sorted_with_random_indices_swapped(size: int, randomness: float=0.1) -> list:
+def generate_sorted_with_random_indices_swapped(size: int, randomness: float=0.1) -> list[int]:
     """
     Generate a variant of partially sorted dataset where a few elements are randomly swapped.
 
     Parameters
     ----------
     size : int
-        - Size of the list to be generated
+        Size of the list to be generated.
     randomness : float
-        - The proportion of items to be swapped.
+        The proportion of items to be swapped.
 
     Returns
     -------
-    data : list
+    data : list[int]
+        A list containing the dataset with some elements randomly swapped.
     """
     data = list(range(size))
     num_swaps = max(1, int(size * randomness))
@@ -324,18 +326,56 @@ def generate_sorted_with_random_indices_swapped(size: int, randomness: float=0.1
     return data
 
 # Define function to generate a dataset where each element increases exponentially
-def generate_exponentially_growing_dataset(size):
+def generate_exponentially_growing_dataset(size: int) -> list[int]:
+    """
+    Generate a dataset where each element increases exponentially
+
+    Parameters
+    ----------
+    size : int
+        The size of the dataset to be created
+
+    Returns
+    -------
+    list[int]
+    """
     return [2 ** i for i in range(size)]
 
 # Define function to generate a dataset where elements alternate between high and low peaks, similar to a fractal
-def generate_fractal_dataset(size):
+def generate_fractal_dataset(size: int) -> list[int]:
+    """
+    Generate a dataset where elements alternate between high and low peaks, similar to a fractal
+
+    Parameters
+    ----------
+    size : int
+
+    Returns
+    -------
+    data : list[int]
+        A list of the generated fractal data
+    """
     data = []
     for i in range(size):
         data.append(i // 2 if i % 2 == 0 else size - (i // 2 + 1))
     return data
 
 # Define function to generate a variant of partially sorted data, where there are groups of sorted data
-def generate_sorted_in_groups(size, group_size=5):
+def generate_sorted_in_groups(size: int, group_size: int=5) -> list[int]:
+    """
+    Generate a variant of partially sorted data, where there are groups of sorted data
+
+    Parameters
+    ----------
+    size : int
+        The size of the dataset to be returned
+    group_size : int
+        The size of the groups within the sorted data
+
+    Returns
+    -------
+    data : list[int]
+    """
     data = []
     for i in range(0, size, group_size):
         block = list(range(i, min(i + group_size, size)))
@@ -344,18 +384,66 @@ def generate_sorted_in_groups(size, group_size=5):
 
 #These functions are pretty intuitive
 def generate_list_of_evens(size: int) -> list[int]:
+    """
+    Generate a list of even numbers.
+
+    Parameters
+    ----------
+    size : int
+
+    Returns
+    -------
+    list[int]
+    """
     return [random.choice(range(0, 100000, 2)) for i in range(size)]
 
 
 def generate_list_of_odds(size: int) -> list[int]:
+    """
+    Generate a list of odd numbers.
+
+    Parameters
+    ----------
+    size : int
+
+    Returns
+    -------
+    list[int]
+    """
     return [random.choice(range(1, 100000, 2)) for i in range(size)]
 
 
 def generate_list_of_duplicates_of_one(size: int) -> list[int]:
+    """
+    Generate a list of duplicates of a single randomly chosen integer.
+
+    Parameters
+    ----------
+    size : int
+        The number of elements in the list
+
+    Returns
+    -------
+    list[int]
+        A list of the randomly chosen number
+    """
     value = random.randint(0, 100000)
     return [value for i in range(size)]
 
 
 def generate_list_of_duplicates_of_multiple(size: int, num_duplicates: int) -> list[int]:
+    """
+    Generate a list of length `size` where there are `num_duplicates` distinct numbers.
+
+    Parameters
+    ----------
+    size : int
+    num_duplicates : int
+
+    Returns
+    -------
+    list[int]
+        The generated list of length `size` with `num_duplicates` distinct numbers.
+    """
     values = [random.randint(0, 100000) for i in range(num_duplicates)]
     return [random.choice(values) for i in range(size)]
