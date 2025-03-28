@@ -87,7 +87,6 @@ Extra Datasets to measure edge cases:
 4) Duplicate list 
 
 '''
-from typing import Iterable
 
 '''
                                     ---------------------------------
@@ -127,7 +126,15 @@ def generate_structured_datasets(size: int) -> dict[str, list]:
         "Uneven Distributed (End Heavy)": np.concatenate([
             np.random.randint(0, 100, half),
             np.random.randint(900, 1000, size - half)
-        ]).tolist()
+        ]).tolist(),
+        "Sorted with Indices Swapped": generate_sorted_with_random_indices_swapped(size),
+        "Exponentially Growing": generate_exponentially_growing_dataset(size),
+        "Fractal": generate_fractal_dataset(size),
+        "Sorted in Groups": generate_sorted_in_groups(size),
+        "Evens": generate_list_of_evens(size),
+        "Odds": generate_list_of_odds(size),
+        "One Duplicate": generate_list_of_duplicates_of_one(size),
+        "Multiple Duplicates": generate_list_of_duplicates_of_multiple(size, num_duplicates=10)
     }
 
 # Generate large scale random dataset for scalability testing
