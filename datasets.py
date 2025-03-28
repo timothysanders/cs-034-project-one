@@ -97,12 +97,10 @@ Extra Datasets to measure edge cases:
                                     ---------------------------------
 """
 import numpy as np
-import pandas as pd
-import time
 import random
 
 
-# Generate structured datasets for characterist testing
+# Generate structured datasets for characteristic testing
 def generate_structured_datasets(size: int) -> dict[str, list]:
     """
     Create structured datasets for characteristic testing.
