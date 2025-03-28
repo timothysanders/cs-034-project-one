@@ -45,6 +45,17 @@ QuickSort should be the fastest on average.
 Merge Sort will be stable but will require extra space.
 Shell Sort might not be ideal for very large datasets.
 
+
+                            Datasets Created by Michael Jung
+
+Extra Datasets to measure edge cases:
+5. Nearly ordered datasets where a few elements are swapped
+
+6. Dataset with exponentially growing elements
+
+7.Dataset that alternates between increasing and decreasing values
+
+8.Dataset that is sorted in groups
                                     ------------------------------------
                                     Generate algorithm-specific datasets
                                     ------------------------------------
@@ -61,11 +72,19 @@ Shell Sort might not be ideal for very large datasets.
 
 2. datasets for QuickSort
 -------------------------
+1) List of even integers
+2) List of odd integers
+3) List of duplicates of 1 integer
+4) List of duplicates of multiple integers
 
 
 
 3. datasets for Merge sort
 --------------------------
+1) Empty list
+2) Single element list
+3) List of identical elements
+4) Duplicate list 
 
 '''
 
@@ -77,6 +96,7 @@ Shell Sort might not be ideal for very large datasets.
 import numpy as np
 import pandas as pd
 import time
+import random
 
 
 # Generate structured datasets for characterist testing
@@ -105,7 +125,7 @@ def generate_large_random_dataset(size):
     return {
         f"Large Random ({size:,})": np.random.randint(0, 1_000_000, size)
     }
-  
+
 
 # Time sorting algorithms on the datasets
 def time_sorting_algorithms(datasets):
@@ -178,7 +198,7 @@ def generate_random_integer_list(size: int, low: int=0, high: int=100) -> list[i
 def generate_evenly_distributed(size: int, low: int = 0, high: int = 1000) -> np.ndarray:
     """
     Generates an evenly distributed list without large clusters of disorder.
-    
+
     :param size: Number of elements in the list.
     :param low: Minimum value in the range.
     :param high: Maximum value in the range.
@@ -189,9 +209,9 @@ def generate_evenly_distributed(size: int, low: int = 0, high: int = 1000) -> np
 # Define function to generate unevenly_distributed datasets for Shell Sort
 def generate_unevenly_distributed(size: int, low: int = 0, high: int = 1000, split_ratio: float = 0.5) -> np.ndarray:
     """
-    Generates an unevenly distributed list where small numbers are clustered at the end 
+    Generates an unevenly distributed list where small numbers are clustered at the end
     and large numbers at the beginning.
-    
+
     :param size: Number of elements in the list.
     :param low: Minimum value in the range.
     :param high: Maximum value in the range.
@@ -211,7 +231,7 @@ def generate_partly_ordered(size: int, ordered_ratio: float = 0.8, low: int = 0,
     """
     Generates a partly ordered list where the first part is sorted, and the rest is randomly inserted.
     This simulates a stock order book where new data is appended randomly.
-    
+
     :param size: Number of elements in the list.
     :param ordered_ratio: Fraction of the list that should be pre-sorted.
     :param low: Minimum value in the range.
@@ -225,3 +245,54 @@ def generate_partly_ordered(size: int, ordered_ratio: float = 0.8, low: int = 0,
     unordered_part = np.random.randint(low, high, size=unordered_size)  # Random last part
 
     return np.concatenate([ordered_part, unordered_part])
+
+'''
+                    -----------------------------------------------
+                    Extra datasets to test edge cases(from Michael)
+                    -----------------------------------------------
+'''
+# Define function to generate a variant of partially sorted dataset where a few elements are randomly swapped
+def generate_sorted_with_random_indices_swapped(size, randomness=0.1):
+    data = list(range(size))
+    num_swaps = max(1, int(size * randomness))
+    for _ in range(num_swaps):
+        i, j = random.sample(range(size), 2)
+        data[i], data[j] = data[j], data[i]
+    return data
+
+# Define function to generate a dataset where each element increases exponentially
+def generate_exponentially_growing_dataset(size):
+    return [2 ** i for i in range(size)]
+
+# Define function to generate a dataset where elements alternate between high and low peaks, similar to a fractal
+def generate_fractal_dataset(size):
+    data = []
+    for i in range(size):
+        data.append(i // 2 if i % 2 == 0 else size - (i // 2 + 1))
+    return data
+
+# Define function to generate a variant of partially sorted data, where there are groups of sorted data
+def generate_sorted_in_groups(size, group_size=5):
+    data = []
+    for i in range(0, size, group_size):
+        block = list(range(i, min(i + group_size, size)))
+        data.extend(block)
+    return data
+
+#These functions are pretty intuitive
+def generate_list_of_evens(size: int) -> list[int]:
+    return [random.choice(range(0, 100000, 2)) for i in range(size)]
+
+
+def generate_list_of_odds(size: int) -> list[int]:
+    return [random.choice(range(1, 100000, 2)) for i in range(size)]
+
+
+def generate_list_of_duplicates_of_one(size: int) -> list[int]:
+    value = random.randint(0, 100000)
+    return [value for i in range(size)]
+
+
+def generate_list_of_duplicates_of_multiple(size: int, num_duplicates: int) -> list[int]:
+    values = [random.randint(0, 100000) for i in range(num_duplicates)]
+    return [random.choice(values) for i in range(size)]
