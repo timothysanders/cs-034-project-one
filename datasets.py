@@ -1,4 +1,4 @@
-'''
+"""
                                     ---------------------------------
                                     Generate general-purpose datasets
                                     ---------------------------------
@@ -56,10 +56,11 @@ Extra Datasets to measure edge cases:
 7.Dataset that alternates between increasing and decreasing values
 
 8.Dataset that is sorted in groups
+
+
                                     ------------------------------------
                                     Generate algorithm-specific datasets
                                     ------------------------------------
-
 
 1. datasets for Shell sort
 --------------------------
@@ -72,27 +73,29 @@ Extra Datasets to measure edge cases:
 
 2. datasets for QuickSort
 -------------------------
-1) List of even integers
-2) List of odd integers
-3) List of duplicates of 1 integer
-4) List of duplicates of multiple integers
+    1) List of even integers
+    2) List of odd integers
+    3) List of duplicates of 1 integer
+    4) List of duplicates of multiple integers
 
 
 
 3. datasets for Merge sort
 --------------------------
-1) Empty list
-2) Single element list
-3) List of identical elements
-4) Duplicate list 
+    1) Empty list
+    2) Single element list
+    3) List of identical elements
+    4) Mixed negative and positive elements
+    5) Sorted, then rotated elements
+    6) Floating point elements
+    7) Periodic pattern elements
+"""
 
-'''
-
-'''
+"""
                                     ---------------------------------
                                     Generate general-purpose datasets
                                     ---------------------------------
-'''
+"""
 import numpy as np
 import pandas as pd
 import time
@@ -153,47 +156,6 @@ def generate_large_random_dataset(size: int) -> dict[str, list]:
     return {
         f"Large Random ({size:,})": np.random.randint(0, 1_000_000, size).tolist()
     }
-
-
-# Time sorting algorithms on the datasets
-def time_sorting_algorithms(datasets):
-    results = []
-
-    for name, data in datasets.items():
-        arr = data.copy()
-        n = len(arr)
-
-        # Generate gap values
-        gaps = [n // (2 ** k) for k in range(int(np.log2(n)) + 1) if n // (2 ** k) > 0]
-
-        # Shell Sort (with gap-aware implementation)
-        arr_shell = arr.copy()
-        t1 = time.time()
-        swap_counts = shell_sort(arr_shell)
-        t_shell = time.time() - t1
-        total_swaps = sum(swap_counts)
-
-        # QuickSort (NumPy built-in)
-        t2 = time.time()
-        np.sort(arr.copy(), kind='quicksort')
-        t_quick = time.time() - t2
-
-        # MergeSort (NumPy built-in)
-        t3 = time.time()
-        np.sort(arr.copy(), kind='mergesort')
-        t_merge = time.time() - t3
-
-        results.append({
-            "Dataset": name,
-            "Size": n,
-            "Shell Sort Time (s)": t_shell,
-            "Shell Sort Swaps": total_swaps,
-            "QuickSort Time (s)": t_quick,
-            "MergeSort Time (s)": t_merge
-        })
-
-    return pd.DataFrame(results)
-
 
 """
                                     -------------------------------------
