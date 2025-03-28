@@ -39,13 +39,13 @@ def time_sorting_algorithms(size: int) -> pd.DataFrame:
         # QuickSort
         arr_quicksort = data.copy()
         t2 = time.time()
-        quicksort(arr_quicksort, 0, len(arr_quicksort) - 1)
+        quicksort_swaps = quicksort(arr_quicksort, 0, len(arr_quicksort) - 1)
         t_quick = time.time() - t2
 
         # MergeSort
         arr_mergesort = data.copy()
         t3 = time.time()
-        merge_sort(arr_mergesort, 0, len(arr_mergesort) - 1)
+        merge_swaps = merge_sort(arr_mergesort, 0, len(arr_mergesort) - 1)
         t_merge = time.time() - t3
 
         results.append({
@@ -54,9 +54,9 @@ def time_sorting_algorithms(size: int) -> pd.DataFrame:
             "Shell Sort Time (s)": t_shell,
             "Shell Sort Swaps": total_shell_swaps,
             "QuickSort Time (s)": t_quick,
-            "QuickSort Swaps": 0,
+            "QuickSort Swaps": quicksort_swaps,
             "MergeSort Time (s)": t_merge,
-            "MergeSort Swaps": 0
+            "MergeSort Swaps": merge_swaps
         })
 
     return pd.DataFrame(results)
@@ -107,13 +107,13 @@ def time_merge_sort_algorithm(size: int) -> pd.DataFrame:
     for name, data in datasets.items():
         n = len(data)
         t1 = time.time()
-        merge_sort(data, 0, len(data) - 1)
+        total_merge_swaps = merge_sort(data, 0, len(data) - 1)
         t_merge = time.time() - t1
         results.append({
             "Dataset": name,
             "Size": n,
-            "Merge Sort Time (s)": t_merge,
-            "Merge Sort Swaps": 0,
+            "Merge Sort Time (s)": f"{t_merge:.6f}",
+            "Merge Sort Swaps": total_merge_swaps,
         })
     return pd.DataFrame(results)
 
@@ -134,18 +134,18 @@ def time_quick_sort_algorithm(size: int) -> pd.DataFrame:
     for name, data in datasets.items():
         n = len(data)
         t1 = time.time()
-        quicksort(data, 0, len(data) - 1)
+        total_quicksort_swaps = quicksort(data, 0, len(data) - 1)
         t_quick = time.time() - t1
         results.append({
             "Dataset": name,
             "Size": n,
             "QuickSort Time (s)": t_quick,
-            "QuickSort Swaps": 0,
+            "QuickSort Swaps": total_quicksort_swaps,
         })
     return pd.DataFrame(results)
 
 if __name__ == "__main__":
-    dataset_size = 1000
+    dataset_size = 10000
     general_results = time_sorting_algorithms(dataset_size)
     shell_sort_results = time_shell_sort_algorithm(dataset_size)
     quicksort_results = time_quick_sort_algorithm(dataset_size)
