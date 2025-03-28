@@ -87,6 +87,7 @@ Extra Datasets to measure edge cases:
 4) Duplicate list 
 
 '''
+from typing import Iterable
 
 '''
                                     ---------------------------------
@@ -193,6 +194,27 @@ def time_sorting_algorithms(datasets):
                                     -------------------------------------
 """
 
+
+def generate_shell_sort_datasets(size: int) -> dict[str, list]:
+    """
+    Create datasets specifically for testing the shell sort algorithm.
+
+    Parameters
+    ----------
+    size : int
+
+    Returns
+    -------
+    dict[str, list]
+    """
+    datasets = {
+        "Evenly distributed": generate_evenly_distributed(size),
+        "Unevenly distributed": generate_unevenly_distributed(size),
+        "Partly ordered": generate_partly_ordered(size)
+    }
+    return datasets
+
+
 # Define function to generate an evenly_distributed dataset for Shell Sort
 def generate_evenly_distributed(size: int, low: int = 0, high: int = 1000) -> list:
     """
@@ -210,7 +232,7 @@ def generate_evenly_distributed(size: int, low: int = 0, high: int = 1000) -> li
     Returns
     -------
     list
-        - Evenly distributed NumPy array.
+        - Evenly distributed list.
     """
     return np.random.permutation(np.linspace(low, high, size)).tolist()
 
@@ -279,7 +301,21 @@ def generate_partly_ordered(size: int, ordered_ratio: float = 0.8, low: int = 0,
                     -----------------------------------------------
 '''
 # Define function to generate a variant of partially sorted dataset where a few elements are randomly swapped
-def generate_sorted_with_random_indices_swapped(size, randomness=0.1):
+def generate_sorted_with_random_indices_swapped(size: int, randomness: float=0.1) -> list:
+    """
+    Generate a variant of partially sorted dataset where a few elements are randomly swapped.
+
+    Parameters
+    ----------
+    size : int
+        - Size of the list to be generated
+    randomness : float
+        - The proportion of items to be swapped.
+
+    Returns
+    -------
+    data : list
+    """
     data = list(range(size))
     num_swaps = max(1, int(size * randomness))
     for _ in range(num_swaps):
