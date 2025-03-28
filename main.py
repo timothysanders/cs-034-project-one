@@ -2,6 +2,7 @@ import pandas as pd
 import time
 
 from datasets import (generate_structured_datasets,
+                      generate_large_random_dataset,
                       generate_merge_sort_datasets,
                       generate_quicksort_datasets,
                       generate_shell_sort_datasets)
@@ -24,6 +25,7 @@ def time_sorting_algorithms(size: int) -> pd.DataFrame:
     pd.DataFrame
     """
     datasets = generate_structured_datasets(size)
+    datasets.update(generate_large_random_dataset(1000000))
     results = []
 
     for name, data in datasets.items():
