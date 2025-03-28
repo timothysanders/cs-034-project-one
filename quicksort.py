@@ -10,9 +10,9 @@ The time complexity varies based on the given sequence, but the average runtime 
 """
 
 
-def partition(numbers: list[int | float], low_index: int, high_index: int) -> int:
+def partition(numbers: list[int | float], low_index: int, high_index: int) -> tuple[int, int]:
     """
-    Partition the array segment and return the partition index.
+    Partition the array segment and return the partition index, along with the swap count.
 
     Parameters
     ----------
@@ -25,12 +25,13 @@ def partition(numbers: list[int | float], low_index: int, high_index: int) -> in
 
     Returns
     -------
-    int
-        The index of the last element in the lower partition
+    tuple[int, int]
+        A tuple containing the index of the last element in the lower partition and the number of swaps made.
     """
     # Identify the midpoint/pivot value using floor division
     midpoint = low_index + (high_index - low_index) // 2
     pivot = numbers[midpoint]
+    swap_count = 0
     done = False
     while not done:
         while numbers[low_index] < pivot:
@@ -41,14 +42,15 @@ def partition(numbers: list[int | float], low_index: int, high_index: int) -> in
             done = True
         else:
             numbers[low_index], numbers[high_index] = numbers[high_index], numbers[low_index]
+            swap_count += 1
             low_index += 1
             high_index -= 1
-    return high_index
+    return high_index, swap_count
 
 
-def quicksort(numbers: list[int | float], low_index: int, high_index: int) -> None:
+def quicksort(numbers: list[int | float], low_index: int, high_index: int) -> int:
     """
-    Sort a segment of the list using quicksort algorithm.
+    Sort a segment of the list using the quicksort algorithm and count the number of swaps.
 
     Parameters
     ----------
@@ -58,17 +60,23 @@ def quicksort(numbers: list[int | float], low_index: int, high_index: int) -> No
         The lower bound of the segment to be sorted
     high_index : int
         The upper bound of the segment to be sorted
+
+    Returns
+    -------
+    int
+        The total number of swaps made during the sorting process
     """
     if not numbers:
         ValueError("Invalid parameters.")
     # Our base case is where the partition size is 1 or zero elements
     if low_index >= high_index:
-        return
+        return 0
 
-    partition_index = partition(numbers, low_index, high_index)
+    partition_index, swap_count_partition = partition(numbers, low_index, high_index)
 
-    quicksort(numbers, low_index, partition_index)
-    quicksort(numbers, partition_index + 1, high_index)
+    swap_count_left = quicksort(numbers, low_index, partition_index)
+    swap_count_right = quicksort(numbers, partition_index + 1, high_index)
+    return swap_count_partition + swap_count_left + swap_count_right
 
 
 if __name__ == "__main__":
