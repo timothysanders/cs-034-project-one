@@ -423,7 +423,12 @@ def generate_list_of_duplicates_of_multiple(size: int, num_duplicates: int) -> l
 """
 
 def generate_quicksort_datasets(size: int) -> dict[str, list]:
-    pass
+    return {
+        "Evens": generate_list_of_evens(size),
+        "Odds": generate_list_of_odds(size),
+        "Duplicates of One": generate_list_of_duplicates_of_one(size),
+        "Multiple Duplicates": generate_list_of_duplicates_of_multiple(size, num_duplicates=10)
+    }
 
 """
                     -------------------------------------
