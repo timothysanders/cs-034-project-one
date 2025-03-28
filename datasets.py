@@ -100,30 +100,50 @@ import random
 
 
 # Generate structured datasets for characterist testing
-def generate_structured_datasets(size):
-    """Structured datasets for characteristic testing."""
+def generate_structured_datasets(size: int) -> dict[str, list]:
+    """
+    Create structured datasets for characteristic testing.
+
+    Parameters
+    ----------
+    size : int
+
+    Returns
+    -------
+    dict[str, list]
+    """
     half = size // 2
     return {
-        "Random": np.random.randint(0, 1000, size),
-        "Nearly Sorted": np.sort(np.random.randint(0, 1000, size)) + np.random.randint(-3, 3, size),
-        "Reverse Sorted": np.sort(np.random.randint(0, 1000, size))[::-1],
-        "Many Duplicates": np.random.choice([5, 10, 15, 20], size=size, replace=True),
-        "Even Distributed": np.linspace(0, 1000, size).astype(int),
+        "Random": np.random.randint(0, 1000, size).tolist(),
+        "Nearly Sorted": (np.sort(np.random.randint(0, 1000, size)) + np.random.randint(-3, 3, size)).tolist(),
+        "Reverse Sorted": np.sort(np.random.randint(0, 1000, size))[::-1].tolist(),
+        "Many Duplicates": np.random.choice([5, 10, 15, 20], size=size, replace=True).tolist(),
+        "Even Distributed": np.linspace(0, 1000, size, dtype=int).tolist(),
         "Uneven Distributed (Front Heavy)": np.concatenate([
             np.random.randint(900, 1000, half),
             np.random.randint(0, 100, size - half)
-        ]),
+        ]).tolist(),
         "Uneven Distributed (End Heavy)": np.concatenate([
             np.random.randint(0, 100, half),
             np.random.randint(900, 1000, size - half)
-        ])
+        ]).tolist()
     }
 
 # Generate large scale random dataset for scalability testing
-def generate_large_random_dataset(size):
-    """Single large random dataset for scalability testing."""
+def generate_large_random_dataset(size: int) -> dict[str, list]:
+    """
+    Single large random dataset for scalability testing.
+
+    Parameters
+    ----------
+    size : int
+
+    Returns
+    -------
+    dict[str, list]
+    """
     return {
-        f"Large Random ({size:,})": np.random.randint(0, 1_000_000, size)
+        f"Large Random ({size:,})": np.random.randint(0, 1_000_000, size).tolist()
     }
 
 
@@ -167,84 +187,91 @@ def time_sorting_algorithms(datasets):
     return pd.DataFrame(results)
 
 
+"""
+                                    -------------------------------------
+                                    Generate shell sort specific datasets
+                                    -------------------------------------
+"""
 
-'''
-                                    -----------------------------------
-                                    Generate random datasets (from Tim)
-                                    -----------------------------------
-'''
-
-import numpy as np
-
-
-def generate_random_integer_list(size: int, low: int=0, high: int=100) -> list[int]:
+# Define function to generate an evenly_distributed dataset for Shell Sort
+def generate_evenly_distributed(size: int, low: int = 0, high: int = 1000) -> list:
     """
-    Generate a random list with a length of `size`.
+    Generates an evenly distributed list without large clusters of disorder.
 
     Parameters
     ----------
     size : int
-    low : int = 0
-    high : int = 100
+        - Number of elements in the list.
+    low : int
+        - Minimum value in the range.
+    high : int
+        - Maximum value in the range.
 
     Returns
     -------
-    list[int]
+    list
+        - Evenly distributed NumPy array.
     """
-    return np.random.randint(low, high, size=size).tolist()
-
-# Define function to generate an evenly_distributed dataset for Shell Sort
-
-def generate_evenly_distributed(size: int, low: int = 0, high: int = 1000) -> np.ndarray:
-    """
-    Generates an evenly distributed list without large clusters of disorder.
-
-    :param size: Number of elements in the list.
-    :param low: Minimum value in the range.
-    :param high: Maximum value in the range.
-    :return: Evenly distributed NumPy array.
-    """
-    return np.random.permutation(np.linspace(low, high, size))
+    return np.random.permutation(np.linspace(low, high, size)).tolist()
 
 # Define function to generate unevenly_distributed datasets for Shell Sort
-def generate_unevenly_distributed(size: int, low: int = 0, high: int = 1000, split_ratio: float = 0.5) -> np.ndarray:
+def generate_unevenly_distributed(size: int, low: int = 0, high: int = 1000, split_ratio: float = 0.5) -> list:
     """
     Generates an unevenly distributed list where small numbers are clustered at the end
     and large numbers at the beginning.
 
-    :param size: Number of elements in the list.
-    :param low: Minimum value in the range.
-    :param high: Maximum value in the range.
-    :param split_ratio: Fraction of large numbers at the beginning.
-    :return: Unevenly distributed NumPy array.
+    Parameters
+    ----------
+    size : int
+        - Number of elements in the list.
+    low : int
+        - Minimum value in the range.
+    high : int
+        - Maximum value in the range.
+    split_ratio : float
+        - Fraction of large numbers at the beginning.
+
+    Returns
+    -------
+    list
+        - Unevenly distributed NumPy array.
     """
     split_point = int(size * split_ratio)
     large_numbers = np.random.randint(high - 100, high, size=split_point)  # Large numbers at the beginning
     small_numbers = np.random.randint(low, low + 100, size=size - split_point)  # Small numbers at the end
-    uneven_list = np.concatenate([large_numbers, small_numbers])
+    uneven_list = np.concatenate([large_numbers, small_numbers]).tolist()
     np.random.shuffle(uneven_list)  # Introduce some randomness
     return uneven_list
 
 
 # Define function to generate partly ordered yet frequently updated dataset for Shell Sort
-def generate_partly_ordered(size: int, ordered_ratio: float = 0.8, low: int = 0, high: int = 1000) -> np.ndarray:
+def generate_partly_ordered(size: int, ordered_ratio: float = 0.8, low: int = 0, high: int = 1000) -> list:
     """
     Generates a partly ordered list where the first part is sorted, and the rest is randomly inserted.
     This simulates a stock order book where new data is appended randomly.
 
-    :param size: Number of elements in the list.
-    :param ordered_ratio: Fraction of the list that should be pre-sorted.
-    :param low: Minimum value in the range.
-    :param high: Maximum value in the range.
-    :return: Partly ordered NumPy array.
+    Parameters
+    ----------
+    size : int
+        - Number of elements in the list.
+    ordered_ratio: float
+        - Fraction of the list that should be pre-sorted.
+    low : int
+        - Minimum value in the range.
+    high: int
+        - Maximum value in the range.
+    Returns
+    -------
+    list
+        - Partly ordered NumPy array.
     """
     ordered_size = int(size * ordered_ratio)
     unordered_size = size - ordered_size
 
     ordered_part = np.sort(np.random.randint(low, high, size=ordered_size))  # Sorted first part
     unordered_part = np.random.randint(low, high, size=unordered_size)  # Random last part
-
-    return np.concatenate([ordered_part, unordered_part])
+    partly_ordered = np.concatenate([ordered_part, unordered_part]).tolist()
+    return partly_ordered
 
 '''
                     -----------------------------------------------
