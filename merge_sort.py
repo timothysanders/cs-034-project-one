@@ -70,16 +70,14 @@ def merge_sort(numbers: list[int | float], start_index: int, end_index: int) -> 
     end_index : int
         - End index of the subarray to be sorted
     """
-    if not numbers:
-        raise ValueError("Invalid parameters")
-
-    if start_index < end_index:
-        mid_index = (start_index + end_index) // 2
-        # recursively sort left and right partitions
-        merge_sort(numbers, start_index, mid_index)
-        merge_sort(numbers, mid_index + 1, end_index)
-        # merge left and right partition in sorted order
-        merge(numbers, start_index, mid_index, end_index)
+    if numbers:
+        if start_index < end_index:
+            mid_index = (start_index + end_index) // 2
+            # recursively sort left and right partitions
+            merge_sort(numbers, start_index, mid_index)
+            merge_sort(numbers, mid_index + 1, end_index)
+            # merge left and right partition in sorted order
+            merge(numbers, start_index, mid_index, end_index)
 
 
 if __name__ == "__main__":
