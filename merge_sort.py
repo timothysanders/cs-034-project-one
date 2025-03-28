@@ -10,9 +10,9 @@ recursively sorts the two halves and merges the sorted halves to create a sorted
 The time complexity varies based on the given sequence, but the average runtime is O(NlogN).
 """
 
-def merge(numbers: list[int | float], start_index: int, mid_index: int, end_index: int) -> None:
+def merge(numbers: list[int | float], start_index: int, mid_index: int, end_index: int) -> int:
     """
-    Merge two sorted subarrays into a single sorted subarray.
+    Merge two sorted subarrays into a single sorted subarray and count swaps.
 
     Parameters
     ----------
@@ -24,7 +24,13 @@ def merge(numbers: list[int | float], start_index: int, mid_index: int, end_inde
         End index of the first subarray
     end_index : int
         End index of the second subarray (second subarray starts at j+1)
+
+    Returns
+    -------
+    int
+        The number of swaps made during the merge process
     """
+    swap_count = 0
     merged_size = end_index - start_index + 1
     merged_numbers = [0] * merged_size
     merge_position = 0
@@ -37,6 +43,7 @@ def merge(numbers: list[int | float], start_index: int, mid_index: int, end_inde
             left_position += 1
         else:
             merged_numbers[merge_position] = numbers[right_position]
+            swap_count += (mid_index - left_position + 1)
             right_position += 1
         merge_position += 1
     # If left partition is not empty, add remaining elements to merged numbers
@@ -52,14 +59,16 @@ def merge(numbers: list[int | float], start_index: int, mid_index: int, end_inde
     # Copy merge back to original list
     for merge_index in range(merged_size):
         numbers[start_index + merge_index] = merged_numbers[merge_index]
+    return swap_count
 
 
-def merge_sort(numbers: list[int | float], start_index: int, end_index: int) -> None:
+def merge_sort(numbers: list[int | float], start_index: int, end_index: int) -> int:
     """
-    Sort a subarray using the merge sort algorithm.
+    Sort a subarray using the merge sort algorithm and count the number of swaps.
 
     This function recursively divides the array into halves until each subarray
-    contains at most one element, then merges them back together in sorted order.
+    contains at most one element, then merges them back together in sorted order,
+    accumulating the count of swaps made during the merge process.
 
     Parameters
     ----------
@@ -69,15 +78,22 @@ def merge_sort(numbers: list[int | float], start_index: int, end_index: int) -> 
         - Start index of the subarray to be sorted
     end_index : int
         - End index of the subarray to be sorted
+
+    Returns
+    -------
+    int
+        The total number of swaps made during the sorting process
     """
     if numbers:
         if start_index < end_index:
             mid_index = (start_index + end_index) // 2
             # recursively sort left and right partitions
-            merge_sort(numbers, start_index, mid_index)
-            merge_sort(numbers, mid_index + 1, end_index)
+            left_swaps = merge_sort(numbers, start_index, mid_index)
+            right_swaps = merge_sort(numbers, mid_index + 1, end_index)
             # merge left and right partition in sorted order
-            merge(numbers, start_index, mid_index, end_index)
+            merge_swaps = merge(numbers, start_index, mid_index, end_index)
+            return left_swaps + right_swaps + merge_swaps
+    return 0
 
 
 if __name__ == "__main__":
