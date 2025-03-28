@@ -151,20 +151,23 @@ if __name__ == "__main__":
     quicksort_results = time_quick_sort_algorithm(dataset_size)
     merge_sort_results = time_merge_sort_algorithm(dataset_size)
     print(f"""
-    -------------------------
-    GENERAL RESULTS
-    -------------------------
-    {general_results}
-    -------------------------
-    SHELL SORT RESULTS
-    -------------------------
-    {shell_sort_results}
-    -------------------------
-    QUICKSORT RESULTS
-    -------------------------
-    {quicksort_results}
-    -------------------------
-    MERGE SORT RESULTS
-    -------------------------
-    {merge_sort_results}
-    """)
+-------------------------
+GENERAL RESULTS
+-------------------------
+{general_results}
+
+-------------------------
+SHELL SORT RESULTS
+-------------------------
+{shell_sort_results}
+
+-------------------------
+QUICKSORT RESULTS
+-------------------------
+{quicksort_results}
+
+-------------------------
+MERGE SORT RESULTS
+-------------------------
+{merge_sort_results}
+""")
