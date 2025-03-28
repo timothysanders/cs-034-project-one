@@ -454,3 +454,129 @@ def generate_list_of_duplicates_of_multiple(size: int, num_duplicates: int) -> l
     """
     values = [random.randint(0, 100000) for i in range(num_duplicates)]
     return [random.choice(values) for i in range(size)]
+
+
+"""
+                    ----------------------------------------------
+                    Generate quicksort specific datasets (Michael)
+                    ----------------------------------------------
+"""
+
+def generate_quicksort_datasets(size: int) -> dict[str, list]:
+    pass
+
+"""
+                    -------------------------------------
+                    Generate merge sort specific datasets
+                    -------------------------------------
+"""
+
+def generate_merge_sort_datasets(size: int) -> dict[str, list]:
+    return {
+        "Empty List": [],
+        "Single Value": generate_single_value_dataset(),
+        "Uniform List": generate_uniform_dataset(size),
+        "Mixed -/+ List": generate_mixed_neg_pos_dataset(size),
+        "Sorted + Rotated List": generate_sorted_rotated_dataset(size),
+        "Float List": generate_random_float_dataset(size),
+        "Periodic Pattern": generate_periodic_pattern_dataset(size)
+    }
+
+def generate_single_value_dataset() -> list[int]:
+    """
+    Generate a singleton dataset containing a single random integer.
+
+    Returns
+    -------
+    list[int]
+        A list containing a single random integer.
+    """
+    return [random.randint(0, 1000)]
+
+def generate_uniform_dataset(size: int) -> list[int]:
+    """
+    Generate a list of length `size` where all elements are the same.
+
+    Parameters
+    ----------
+    size : int
+        The number of elements in the dataset.
+
+    Returns
+    -------
+    list[int]
+        A list of length `size` where every element is the same randomly chosen integer.
+    """
+    value = random.randint(0, 1000)
+    return [value] * size
+
+def generate_mixed_neg_pos_dataset(size: int) -> list[int]:
+    """
+    Generate a list of length `size` containing a mix of negative and positive integers.
+
+    Parameters
+    ----------
+    size : int
+        The number of items in the list.
+
+    Returns
+    -------
+    list[int]
+        A list of random integers ranging from -1000 to 1000.
+    """
+    return [random.randint(-1000, 1000) for _ in range(size)]
+
+
+def generate_sorted_rotated_dataset(size: int) -> list[int]:
+    """
+    Generate a sorted, then rotated dataset.
+
+    Parameters
+    ----------
+    size : int
+        The number of items in the list.
+
+    Returns
+    -------
+    list[int]
+        A sorted list of integers rotated by a random pivot.
+    """
+    if size == 0:
+        return []
+    sorted_list = list(range(size))
+    pivot = random.randint(0, size - 1)
+    return sorted_list[pivot:] + sorted_list[:pivot]
+
+def generate_random_float_dataset(size: int) -> list[float]:
+    """
+    Generate a dataset of random floating-point numbers.
+
+    Parameters
+    ----------
+    size : int
+        The number of elements in the dataset.
+
+    Returns
+    -------
+    list[float]
+        A list of random floats in the range [0.0, 1000.0).
+    """
+    return [random.uniform(0.0, 1000.0) for _ in range(size)]
+
+def generate_periodic_pattern_dataset(size: int) -> list[int]:
+    """
+    Generate a list with a periodic repeating pattern.
+
+    Parameters
+    ----------
+    size : int
+        The number of items in the list.
+
+    Returns
+    -------
+    list[int]
+        A list where a specific pattern of [1, 2, 3] is repeated to fill the dataset.
+    """
+    pattern = [1, 2, 3]
+    repeated = (pattern * ((size // len(pattern)) + 1))[:size]
+    return repeated
