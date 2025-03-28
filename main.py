@@ -1,209 +1,126 @@
-import timeit
-import tracemalloc
+import pandas as pd
+import time
 
-from datasets import (generate_random_integer_list,
-                      generate_evenly_distributed, 
-                      generate_unevenly_distributed, 
-                      generate_partly_ordered, 
-                      generate_sorted_with_random_indices_swapped, 
-                      generate_exponentially_growing_dataset, 
-                      generate_fractal_dataset, 
-                      generate_sorted_in_groups, 
-                      generate_list_of_evens, 
-                      generate_list_of_odds, 
-                      generate_list_of_duplicates_of_one, 
-                      generate_list_of_duplicates_of_multiple)   
+from datasets import (generate_structured_datasets,
+                      generate_merge_sort_datasets,
+                      generate_quicksort_datasets,
+                      generate_shell_sort_datasets)
 from quicksort import quicksort
 from merge_sort import merge_sort
 from shell_sort import shell_sort
 
 
-def measure_quicksort_memory() -> None:
-    """
-    Measure the memory utilization of the quicksort algorithm on the list `numbers`.
+# Time sorting algorithms on the datasets
+def time_sorting_algorithms(size: int):
+    datasets = generate_structured_datasets(size)
+    results = []
 
-    Parameters
-    ----------
-    numbers : list[int]
-        - A list of numbers to be sorted.
+    for name, data in datasets.items():
+        n = len(data)
 
-    Returns
-    -------
-    None
-    """
-    numbers = generate_random_integer_list(size=100000)
-    tracemalloc.start()
-    quicksort(numbers, 0, len(numbers) - 1)
-    current, peak = tracemalloc.get_traced_memory()
-    tracemalloc.stop()
-    print(f"Peak memory usage for quicksort: {peak / 1024**2:.4f} MB")
+        # Shell Sort (with gap-aware implementation)
+        arr_shell = data.copy()
+        t1 = time.time()
+        swap_counts = shell_sort(arr_shell)
+        t_shell = time.time() - t1
+        total_shell_swaps = sum(swap_counts)
 
+        # QuickSort
+        arr_quicksort = data.copy()
+        t2 = time.time()
+        quicksort(arr_quicksort, 0, len(arr_quicksort) - 1)
+        t_quick = time.time() - t2
 
-def measure_merge_sort_memory() -> None:
-    """
-    Measure the memory utilization of the merge sort algorithm on the list `numbers`.
+        # MergeSort
+        arr_mergesort = data.copy()
+        t3 = time.time()
+        merge_sort(arr_mergesort, 0, len(arr_mergesort) - 1)
+        t_merge = time.time() - t3
 
-    Parameters
-    ----------
-    numbers : list[int]
-        - A list of numbers to be sorted.
+        results.append({
+            "Dataset": name,
+            "Size": n,
+            "Shell Sort Time (s)": t_shell,
+            "Shell Sort Swaps": total_shell_swaps,
+            "QuickSort Time (s)": t_quick,
+            "QuickSort Swaps": 0,
+            "MergeSort Time (s)": t_merge,
+            "MergeSort Swaps": 0
+        })
 
-    Returns
-    -------
-    None
-    """
-    numbers = generate_random_integer_list(size=100000)
-    tracemalloc.start()
-    merge_sort(numbers, 0, len(numbers) - 1)
-    current, peak = tracemalloc.get_traced_memory()
-    tracemalloc.stop()
-    print(f"Peak memory usage for merge sort: {peak / 1024**2:.4f} MB")
+    return pd.DataFrame(results)
 
+def time_shell_sort_algorithm(size: int):
+    datasets = generate_shell_sort_datasets(size)
+    results = []
+    for name, data in datasets.items():
+        n = len(data)
+        # Shell Sort (with gap-aware implementation)
+        t1 = time.time()
+        swap_counts = shell_sort(data)
+        t_shell = time.time() - t1
+        total_shell_swaps = sum(swap_counts)
+        results.append({
+            "Dataset": name,
+            "Size": n,
+            "Shell Sort Time (s)": t_shell,
+            "Shell Sort Swaps": total_shell_swaps,
+        })
+    return pd.DataFrame(results)
 
-def measure_shell_sort_memory() -> None:
-    """
-    Measure the memory utilization of the shell sort algorithm on the list `numbers`.
+def time_merge_sort_algorithm(size: int):
+    datasets = generate_merge_sort_datasets(size)
+    results = []
+    for name, data in datasets.items():
+        n = len(data)
+        t1 = time.time()
+        merge_sort(data, 0, len(data) - 1)
+        t_merge = time.time() - t1
+        results.append({
+            "Dataset": name,
+            "Size": n,
+            "Merge Sort Time (s)": t_merge,
+            "Merge Sort Swaps": 0,
+        })
+    return pd.DataFrame(results)
 
-    Parameters
-    ----------
-    numbers : list[int]
-        - A list of numbers to be sorted.
-
-    Returns
-    -------
-    None
-    """
-    numbers = generate_random_integer_list(size=100000)
-    tracemalloc.start()
-    shell_sort(numbers, [88573, 29524, 9841, 3280, 1093, 364, 121, 40, 13, 4])
-    current, peak = tracemalloc.get_traced_memory()
-    tracemalloc.stop()
-    print(f"Peak memory usage for shell sort: {peak / 1024**2:.4f} MB")
-
-
-def measure_quicksort_memory_for_list_of_evens() -> None:
-    """
-    Measure the memory utilization of quicksort on a list of even numbers.
-
-    Parameters
-    ----------
-    numbers : list[int]
-    - A list of numbers to be sorted.
-
-    Returns
-    -------
-    None
-    """
-    numbers = generate_list_of_evens(size=100000)
-    tracemalloc.start()
-    quicksort(numbers, 0, len(numbers) - 1)
-    current, peak = tracemalloc.get_traced_memory()
-    tracemalloc.stop()
-    print(f"Peak memory usage for quicksort on evens: {peak / 1024**2:.4f} MB")
-
-
-def measure_quicksort_memory_for_list_of_odds() -> None:
-    """
-    Measure the memory utilization of quicksort on a list of odd numbers.
-
-    Parameters
-    ----------
-    numbers : list[int]
-        - A list of numbers to be sorted.
-
-    Returns
-    -------
-    None
-    """        
-    numbers = generate_list_of_odds(size=100000)
-    tracemalloc.start()
-    quicksort(numbers, 0, len(numbers) - 1)
-    current, peak = tracemalloc.get_traced_memory()
-    tracemalloc.stop()
-    print(f"Peak memory usage for quicksort on odds: {peak / 1024**2:.4f} MB")
-
-
-def measure_quicksort_memory_for_list_of_duplicates_of_one() -> None:
-    """
-    Measure the memory utilization of quicksort on a list of duplicates of one number.
-
-    Parameters
-    ----------
-    numbers : list[int]
-        - A list of numbers to be sorted.
-
-    Returns
-    -------
-    None
-    """              
-    numbers = generate_list_of_duplicates_of_one(size=100000)
-    tracemalloc.start()
-    quicksort(numbers, 0, len(numbers) - 1)
-    current, peak = tracemalloc.get_traced_memory()
-    tracemalloc.stop()
-    print(f"Peak memory usage for quicksort on single duplicates: {peak / 1024**2:.4f} MB")      
-
-
-def measure_quicksort_memory_for_list_of_duplicates_of_multiple() -> None:
-    """
-    Measure the memory utilization of quicksort on a list of duplicates of multiple numbers.
-
-    Parameters
-    ----------
-    numbers : list[int]
-        - A list of numbers to be sorted.
-
-    Returns
-    -------
-    None
-    """           
-    numbers = generate_list_of_duplicates_of_multiple(size=100000, num_duplicates=500)
-    tracemalloc.start()
-    quicksort(numbers, 0, len(numbers) - 1)
-    current, peak = tracemalloc.get_traced_memory()
-    tracemalloc.stop()
-    print(f"Peak memory usage for quicksort on multiple duplicates: {peak / 1024**2:.4f} MB")    
-    
+def time_quick_sort_algorithm(size: int):
+    datasets = generate_quicksort_datasets(size)
+    results = []
+    for name, data in datasets.items():
+        n = len(data)
+        t1 = time.time()
+        quicksort(data, 0, len(data) - 1)
+        t_quick = time.time() - t1
+        results.append({
+            "Dataset": name,
+            "Size": n,
+            "QuickSort Time (s)": t_quick,
+            "QuickSort Swaps": 0,
+        })
+    return pd.DataFrame(results)
 
 if __name__ == "__main__":
-    execution_time = timeit.timeit(
-        stmt=lambda: measure_quicksort_memory(),
-        number=10
-    )
-    print(f"Total quicksort execution time: {execution_time:.4f} seconds for 10 runs.")
-
-    execution_time = timeit.timeit(
-        stmt=lambda: measure_merge_sort_memory(),
-        number=10
-    )
-    print(f"Total merge sort execution time: {execution_time:.4f} seconds for 10 runs.")
-
-    execution_time = timeit.timeit(
-        stmt=lambda: measure_shell_sort_memory(),
-        number=10
-    )
-    print(f"Total shell sort execution time: {execution_time:.4f} seconds for 10 runs.")
-
-    execution_time = timeit.timeit(
-        stmt=lambda: measure_quicksort_memory_for_list_of_evens(),
-        number=10
-    )
-    print(f"Total quicksort execution time for list of evens: {execution_time:.4f} seconds for 10 runs.")
-
-    execution_time = timeit.timeit(
-        stmt=lambda: measure_quicksort_memory_for_list_of_odds(),
-        number=10
-    )
-    print(f"Total quicksort execution time for list of odds: {execution_time:.4f} seconds for 10 runs.")  
-
-    execution_time = timeit.timeit(
-        stmt=lambda: generate_list_of_duplicates_of_one(),
-        number=10
-    )
-    print(f"Total quicksort execution time for a list of duplicates of one number: {execution_time:.4f} seconds for 10 runs.") 
-     
-    execution_time = timeit.timeit(
-        stmt=lambda: measure_quicksort_memory_for_list_of_duplicates_of_multiple(),
-        number=10
-    )
-    print(f"Total quicksort execution time for a list of duplicates of multiple numbers: {execution_time:.4f} seconds for 10 runs.")         
+    dataset_size = 1000
+    general_results = time_sorting_algorithms(dataset_size)
+    shell_sort_results = time_shell_sort_algorithm(dataset_size)
+    quicksort_results = time_quick_sort_algorithm(dataset_size)
+    merge_sort_results = time_merge_sort_algorithm(dataset_size)
+    print(f"""
+    -------------------------
+    GENERAL RESULTS
+    -------------------------
+    {general_results}
+    -------------------------
+    SHELL SORT RESULTS
+    -------------------------
+    {shell_sort_results}
+    -------------------------
+    QUICKSORT RESULTS
+    -------------------------
+    {quicksort_results}
+    -------------------------
+    MERGE SORT RESULTS
+    -------------------------
+    {merge_sort_results}
+    """)
