@@ -69,10 +69,22 @@ Shell Sort might not be ideal for very large datasets.
 2. datasets for QuickSort
 -------------------------
 
+    1) List of even numbers
+    2) List of odd numbers
+    3) List of duplicates of 1 integer
+    4) List of duplicates of multiple integers
+
 
 
 3. datasets for Merge sort
 --------------------------
+
+    1) Empty list
+    2) Single element list
+    3) Ordered list of two elements
+    4) List of identical elements
+    5) Duplicate list
+
 
 """
 from typing import Optional
